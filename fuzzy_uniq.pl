@@ -48,7 +48,7 @@ sub process($$$)
     print "DEBUG: writing file $output_file ...\n";
 
     open my $fl, "<", $filename;
-    open my $fl_o, ">", $output_file;
+    open( my $fl_o, "> $output_file" ) or die "Couldn't open file for writing: $!\n";
 
     my $lines = 0;
     my $uniq_lines = 0;
