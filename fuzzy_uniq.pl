@@ -73,12 +73,10 @@ sub process($$$$)
     my $prev_line = undef;
 #    my $has_print_prev_line = 0;
 
-    while( <$fl> )
+    while( my $line = <$fl> )
     {
         chomp;
         $lines++;
-
-        my $line = $_;
 
         if( defined $prev_line )
         {
