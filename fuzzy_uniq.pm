@@ -89,7 +89,7 @@ sub calc_similarity_core($$)
 
     my $res = 100.0 * ( $len - $diff ) / $len;
 
-    print "DEBUG: calc_similarity_core: $len_1:'$word_1', $len_2:'$word_2', d1 $dist_1, d2 $dist_2, len=$len, diff=$diff, sim $res\n";
+    #print "DEBUG: calc_similarity_core: $len_1:'$word_1', $len_2:'$word_2', d1 $dist_1, d2 $dist_2, len=$len, diff=$diff, sim $res\n";
 
     return $res;
 }
@@ -100,7 +100,7 @@ sub calc_similarity($$@)
 
     if( defined $should_ignore_case )
     {
-        print "DEBUG: calc_similarity: should_ignore_case = $should_ignore_case\n";
+        #print "DEBUG: calc_similarity: should_ignore_case = $should_ignore_case\n";
 
         if(  $should_ignore_case == 1 )
         {
