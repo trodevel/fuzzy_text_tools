@@ -76,4 +76,11 @@ sub calc_similarity($$)
     return $res;
 }
 
+sub calc_similarity_i($$)
+{
+    my ( $word_1, $word_2 ) = @_;
+
+    return calc_similarity( lc( $word_1 ), lc( $word_2 ) );
+}
+
 1;
