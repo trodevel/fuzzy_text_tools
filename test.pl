@@ -85,6 +85,12 @@ sub test_08()
     test_calc_dist( 'test_08', "UI/UX дизайнер", "UX дизайнер" );
 }
 
+sub test_09()
+{
+    test_calc_similarity( 'test_09', "Лидогенератор", "Лидогенерация" );
+}
+
+
 test_01();
 test_02();
 test_03();
@@ -93,3 +99,4 @@ test_05();
 test_06();
 test_07();
 test_08();
+test_09();
