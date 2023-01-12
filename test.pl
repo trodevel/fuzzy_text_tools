@@ -42,14 +42,16 @@ sub test_calc_similarity($$$@)
 
     if( defined $should_ignore_case )
     {
-        my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2, $should_ignore_case );
-        print "INFO: $name: similarity_i = $res, word_1 '$word_1', word_2 '$word_2'\n";
+        if( $should_ignore_case == 1 )
+        {
+            my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2, $should_ignore_case );
+            print "INFO: $name: similarity_i = $res, word_1 '$word_1', word_2 '$word_2'\n";
+            return;
+        }
     }
-    else
-    {
-        my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2 );
-        print "INFO: $name: similarity = $res, word_1 '$word_1', word_2 '$word_2'\n";
-    }
+
+    my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2 );
+    print "INFO: $name: similarity = $res, word_1 '$word_1', word_2 '$word_2'\n";
 }
 
 sub test_calc_similarity_i($$$)
@@ -133,6 +135,7 @@ sub test_14()
 {
     test_calc_similarity( 'test_14', "Режиссёр", "режиссёр", 1 );
     test_calc_similarity( 'test_14', "режиссёр", "Режиссёр", 1 );
+    test_calc_similarity( 'test_14', "режиссёр", "Режиссёр", 0 );
 }
 
 test_01();
