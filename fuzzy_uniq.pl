@@ -28,6 +28,7 @@ my $VER="1.0";
 use strict;
 use warnings;
 use 5.010;
+use utf8;
 use Getopt::Long;
 
 require fuzzy_uniq;
@@ -63,8 +64,8 @@ sub process($$$$)
     print_debug( "reading file $filename ..." );
     print_debug( "writing file $output_file ..." );
 
-    open( my $fl, "< $filename" ) or die "Couldn't open file for reading: $!\n";
-    open( my $fl_o, "> $output_file" ) or die "Couldn't open file for writing: $!\n";
+    open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
+    open( my $fl_o, ">:encoding(utf8)", $output_file ) or die "Couldn't open file for writing: $!\n";
 
     my $lines = 0;
     my $uniq_lines = 0;
@@ -142,6 +143,8 @@ GetOptions(
 &print_help if not defined $input_file;
 &print_help if not defined $output_file;
 &print_help if not defined $similarity_pct;
+
+binmode(STDOUT, "encoding(UTF-8)");
 
 print STDERR "input_file          = $input_file\n";
 print STDERR "output file         = $output_file\n";
