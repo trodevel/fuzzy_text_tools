@@ -70,6 +70,7 @@ sub process($$$)
     my $uniq_lines = 0;
 
     my $prev_line = undef;
+#    my $has_print_prev_line = 0;
 
     while( <$fl> )
     {
@@ -87,7 +88,12 @@ sub process($$$)
             if( $similarity < $similarity_pct )
             {
                 $uniq_lines++;
+
                 print $fl_o $line . "\n";
+            }
+            else
+            {
+#                $has_print_prev_line = 1;
             }
         }
 
