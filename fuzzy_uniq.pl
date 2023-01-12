@@ -75,7 +75,7 @@ sub process($$$$)
 
     while( my $line = <$fl> )
     {
-        chomp;
+        chomp $line;
         $lines++;
 
         if( defined $prev_line )
