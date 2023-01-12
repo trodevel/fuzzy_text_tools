@@ -55,7 +55,7 @@ sub process($$$)
 
     my $prev_line = undef;
 
-    while( $fl )
+    while( <$fl> )
     {
         chomp;
         $lines++;
