@@ -109,7 +109,7 @@ GetOptions(
 
 &print_help if not defined $input_file;
 &print_help if not defined $output_file;
-&print_help if not defined $similarity;
+&print_help if not defined $similarity_pct;
 
 print STDERR "input_file  = $input_file\n";
 print STDERR "output file = $output_file\n";
