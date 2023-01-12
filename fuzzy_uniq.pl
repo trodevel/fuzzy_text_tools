@@ -34,6 +34,22 @@ require fuzzy_uniq;
 
 ###############################################
 
+my $IS_VERBOSE=0;
+
+###############################################
+
+sub print_debug($)
+{
+    my ( $s ) = @_;
+
+    if( $IS_VERBOSE == 1 )
+    {
+        print "DEBUG: $s\n";
+    }
+}
+
+###############################################
+
 sub process($$$)
 {
     my ( $filename, $output_file, $similarity_pct ) = @_;
@@ -44,8 +60,8 @@ sub process($$$)
         exit;
     }
 
-    print "DEBUG: reading file $filename ...\n";
-    print "DEBUG: writing file $output_file ...\n";
+    print_debug( "reading file $filename ..." );
+    print_debug( "writing file $output_file ..." );
 
     open( my $fl, "< $filename" ) or die "Couldn't open file for reading: $!\n";
     open( my $fl_o, "> $output_file" ) or die "Couldn't open file for writing: $!\n";
@@ -66,7 +82,7 @@ sub process($$$)
         {
             my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line );
 
-            print "DEBUG: line '$line', prev_line '$prev_line', similarity $similarity\n";
+            print_debug( "line '$line', prev_line '$prev_line', similarity $similarity" );
 
             if( $similarity < $similarity_pct )
             {
@@ -77,7 +93,7 @@ sub process($$$)
 
         $prev_line = $line;
 
-        #print "DEBUG: lines: $line\n";
+        #print_debug( "lines: $line" );
     }
 
     print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
@@ -100,13 +116,11 @@ my $input_file;
 my $output_file;
 my $similarity_pct;
 
-my $verbose = 0;
-
 GetOptions(
             "input_file=s"      => \$input_file,   # string
             "output_file=s"     => \$output_file,  # string
             "similarity=i"      => \$similarity_pct,   # integer
-            "verbose"           => \$verbose   )   # flag
+            "verbose"           => \$IS_VERBOSE   )    # flag
   or die("Error in command line arguments\n");
 
 &print_help if not defined $input_file;
