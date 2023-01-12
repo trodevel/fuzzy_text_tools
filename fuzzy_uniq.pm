@@ -47,6 +47,22 @@ sub max($$)
     return $b;
 }
 
+sub sq_sum($$)
+{
+    my ( $v_1, $v_2 ) = @_;
+
+    my $v_1_p = $v_1 * $v_1;
+    my $v_2_p = $v_2 * $v_2;
+
+    my $v_1_2_s = $v_1_p + $v_2_p;
+
+    my $sq = sqrt( $v_1_2_s );
+
+    my $res = $sq;
+
+    return $res;
+}
+
 sub calc_similarity_core($$)
 {
     my ( $word_1, $word_2 ) = @_;
@@ -67,13 +83,13 @@ sub calc_similarity_core($$)
         return 0.0;
     }
 
-    my $max_dist = max( abs( $dist_1 ), abs( $dist_2 ) );
+    my $diff = sq_sum( $dist_1, $dist_2 );
 
-    my $max_len = max( $len_1, $len_2 );
+    my $len = sq_sum( $len_1, $len_2 );
 
-    my $res = 100.0 * ( $max_len - $max_dist ) / $max_len;
+    my $res = 100.0 * ( $len - $diff ) / $len;
 
-    print "DEBUG: calc_similarity_core: $len_1:'$word_1', $len_2:'$word_2', d1 $dist_1, d2 $dist_2, $res\n";
+    print "DEBUG: calc_similarity_core: $len_1:'$word_1', $len_2:'$word_2', d1 $dist_1, d2 $dist_2, len=$len, diff=$diff, sim $res\n";
 
     return $res;
 }
