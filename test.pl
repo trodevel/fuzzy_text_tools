@@ -129,6 +129,11 @@ sub test_13()
     test_calc_similarity( 'test_13', "DevOps engineer", "Devops Engineer", 1 );
 }
 
+sub test_14()
+{
+    test_calc_similarity( 'test_14', "Режиссёр", "режиссёр", 1 );
+}
+
 test_01();
 test_02();
 test_03();
@@ -142,3 +147,4 @@ test_10();
 test_11();
 test_12();
 test_13();
+test_14();
