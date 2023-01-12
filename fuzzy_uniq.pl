@@ -83,7 +83,7 @@ sub process($$$$)
         {
             my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line, $should_ignore_case );
 
-            print_debug( "line '$line', prev_line '$prev_line', similarity $similarity" );
+            print_debug( "prev_line '$prev_line', line '$line', similarity $similarity" );
 
             if( $similarity < $similarity_pct )
             {
