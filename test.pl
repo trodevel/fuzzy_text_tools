@@ -36,13 +36,29 @@ sub test_calc_dist($$$)
     print "INFO: $name: dist = $res, word_1 '$word_1', word_2 '$word_2'\n";
 }
 
-sub test_calc_similarity($$$)
+sub test_calc_similarity($$$@)
+{
+    my ( $name, $word_1, $word_2, $should_ignore_case ) = @_;
+
+    if( defined $should_ignore_case )
+    {
+        my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2, $should_ignore_case );
+        print "INFO: $name: similarity_i = $res, word_1 '$word_1', word_2 '$word_2'\n";
+    }
+    else
+    {
+        my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2 );
+        print "INFO: $name: similarity = $res, word_1 '$word_1', word_2 '$word_2'\n";
+    }
+}
+
+sub test_calc_similarity_i($$$)
 {
     my ( $name, $word_1, $word_2 ) = @_;
 
-    my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2 );
+    my $res = fuzzy_uniq::calc_similarity_i( $word_1, $word_2 );
 
-    print "INFO: $name: similarity = $res, word_1 '$word_1', word_2 '$word_2'\n";
+    print "INFO: $name: similarity_i = $res, word_1 '$word_1', word_2 '$word_2'\n";
 }
 
 sub test_01()
@@ -110,6 +126,7 @@ sub test_12()
 sub test_13()
 {
     test_calc_similarity( 'test_13', "DevOps engineer", "Devops Engineer" );
+    test_calc_similarity( 'test_13', "DevOps engineer", "Devops Engineer", 1 );
 }
 
 test_01();

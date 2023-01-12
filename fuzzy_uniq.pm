@@ -47,7 +47,7 @@ sub max($$)
     return $b;
 }
 
-sub calc_similarity($$)
+sub calc_similarity_core($$)
 {
     my ( $word_1, $word_2 ) = @_;
 
@@ -76,11 +76,16 @@ sub calc_similarity($$)
     return $res;
 }
 
-sub calc_similarity_i($$)
+sub calc_similarity($$@)
 {
-    my ( $word_1, $word_2 ) = @_;
+    my ( $word_1, $word_2, $should_ignore_case ) = @_;
 
-    return calc_similarity( lc( $word_1 ), lc( $word_2 ) );
+    if( defined $should_ignore_case )
+    {
+        return calc_similarity_core( lc( $word_1 ), lc( $word_2 ) );
+    }
+
+    return calc_similarity_core( $word_1, $word_2 );
 }
 
 1;
