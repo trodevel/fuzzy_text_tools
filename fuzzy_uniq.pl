@@ -47,7 +47,7 @@ sub process($$$)
     print "DEBUG: reading file $filename ...\n";
     print "DEBUG: writing file $output_file ...\n";
 
-    open my $fl, "<", $filename;
+    open( my $fl, "< $filename" ) or die "Couldn't open file for reading: $!\n";
     open( my $fl_o, "> $output_file" ) or die "Couldn't open file for writing: $!\n";
 
     my $lines = 0;
