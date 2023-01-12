@@ -132,6 +132,7 @@ sub test_13()
 sub test_14()
 {
     test_calc_similarity( 'test_14', "Режиссёр", "режиссёр", 1 );
+    test_calc_similarity( 'test_14', "режиссёр", "Режиссёр", 1 );
 }
 
 test_01();
