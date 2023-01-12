@@ -35,11 +35,24 @@ sub calc_dist($$)
     return $res;
 }
 
+sub max($$)
+{
+    my ( $a, $b ) = @_;
+
+    if( $a > $b )
+    {
+        return $a;
+    }
+
+    return $b;
+}
+
 sub calc_similarity($$)
 {
     my ( $word_1, $word_2 ) = @_;
 
-    my $dist = calc_dist( $word_1, $word_2 );
+    my $dist_1 = calc_dist( $word_1, $word_2 );
+    my $dist_2 = calc_dist( $word_2, $word_1 );
 
     my $len_1 = length $word_1;
     my $len_2 = length $word_2;
@@ -54,19 +67,11 @@ sub calc_similarity($$)
         return 0.0;
     }
 
-    my $max_len = $len_1;
+    my $max_dist = max( abs( $dist_1 ), abs( $dist_2 ) );
 
-    if( $len_2 > $len_1 )
-    {
-        $max_len = $len_2;
-    }
+    my $max_len = max( $len_1, $len_2 );
 
-    if( $dist < 0 )
-    {
-        $dist = -1 * $dist;
-    }
-
-    my $res = 100.0 * ( $max_len - $dist ) / $max_len;
+    my $res = 100.0 * ( $max_len - $max_dist ) / $max_len;
 
     return $res;
 }
