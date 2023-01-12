@@ -69,7 +69,7 @@ sub process($$$)
             if( $similarity < $similarity_pct )
             {
                 $uniq_lines++;
-                print $fl_o $line;
+                print $fl_o $line . "\n";
             }
         }
 
