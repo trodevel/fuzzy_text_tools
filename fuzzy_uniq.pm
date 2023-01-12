@@ -82,7 +82,10 @@ sub calc_similarity($$@)
 
     if( defined $should_ignore_case )
     {
-        return calc_similarity_core( lc( $word_1 ), lc( $word_2 ) );
+        if(  $should_ignore_case == 1 )
+        {
+            return calc_similarity_core( lc( $word_1 ), lc( $word_2 ) );
+        }
     }
 
     return calc_similarity_core( $word_1, $word_2 );
