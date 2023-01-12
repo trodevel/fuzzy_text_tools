@@ -96,6 +96,14 @@ sub process($$$$)
 #                $has_print_prev_line = 1;
             }
         }
+        else
+        {
+            print_debug( "line '$line', no prev_line" );
+
+            $uniq_lines++;
+
+            print $fl_o $line . "\n";
+        }
 
         $prev_line = $line;
 
