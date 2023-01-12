@@ -98,6 +98,13 @@ sub test_10()
 sub test_11()
 {
     test_calc_similarity( 'test_11', "Agile Delivery Coordinator", "AI " );
+    test_calc_dist( 'test_11', "Agile Delivery Coordinator", "AI " );
+}
+
+sub test_12()
+{
+    test_calc_similarity( 'test_12', "AI ", "Agile Delivery Coordinator" );
+    test_calc_dist( 'test_12', "AI ", "Agile Delivery Coordinator" );
 }
 
 test_01();
@@ -111,3 +118,4 @@ test_08();
 test_09();
 test_10();
 test_11();
+test_12();
