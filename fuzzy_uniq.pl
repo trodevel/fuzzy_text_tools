@@ -50,9 +50,9 @@ sub print_debug($)
 
 ###############################################
 
-sub process($$$)
+sub process($$$$)
 {
-    my ( $filename, $output_file, $similarity_pct ) = @_;
+    my ( $filename, $output_file, $similarity_pct, $should_ignore_case ) = @_;
 
     unless( -e $filename )
     {
@@ -81,7 +81,7 @@ sub process($$$)
 
         if( defined $prev_line )
         {
-            my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line );
+            my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line, $should_ignore_case );
 
             print_debug( "line '$line', prev_line '$prev_line', similarity $similarity" );
 
@@ -121,11 +121,13 @@ sub print_help()
 my $input_file;
 my $output_file;
 my $similarity_pct;
+my $should_ignore_case = 0;
 
 GetOptions(
             "input_file=s"      => \$input_file,   # string
             "output_file=s"     => \$output_file,  # string
             "similarity=i"      => \$similarity_pct,   # integer
+            "ignore-case"       => \$should_ignore_case,   # flag
             "verbose"           => \$IS_VERBOSE   )    # flag
   or die("Error in command line arguments\n");
 
@@ -133,11 +135,12 @@ GetOptions(
 &print_help if not defined $output_file;
 &print_help if not defined $similarity_pct;
 
-print STDERR "input_file  = $input_file\n";
-print STDERR "output file = $output_file\n";
-print STDERR "similarity  = $similarity_pct\n";
+print STDERR "input_file          = $input_file\n";
+print STDERR "output file         = $output_file\n";
+print STDERR "similarity          = $similarity_pct\n";
+print STDERR "should_ignore_case  = $should_ignore_case\n";
 
-process( $input_file, $output_file, $similarity_pct );
+process( $input_file, $output_file, $similarity_pct, $should_ignore_case );
 
 ###############################################
 1;
