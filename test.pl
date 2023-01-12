@@ -107,6 +107,11 @@ sub test_12()
     test_calc_dist( 'test_12', "AI ", "Agile Delivery Coordinator" );
 }
 
+sub test_13()
+{
+    test_calc_similarity( 'test_13', "DevOps engineer", "Devops Engineer" );
+}
+
 test_01();
 test_02();
 test_03();
@@ -119,3 +124,4 @@ test_09();
 test_10();
 test_11();
 test_12();
+test_13();
