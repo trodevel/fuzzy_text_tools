@@ -96,11 +96,15 @@ sub convert_array_to_map($$)
 {
     my ( $array_ref, $map_ref ) = @_;
 
-    my $size = scalar @$array_ref;
+    my @array = @$array_ref;
 
-    for my $i (0 .. $size )
+    my $size = scalar @array;
+
+    for my $i (0 .. ( $size - 1 ) )
     {
-        $map_ref->{$i} = @($array_ref)[$i];
+        $map_ref->{$i} = $array[$i];
+
+        print_debug( "convert_array_to_map: $i - $array[$i]" );
     }
 }
 
@@ -271,7 +275,7 @@ print STDERR "output file         = $output_file\n";
 print STDERR "similarity          = $similarity_pct\n";
 print STDERR "should_ignore_case  = $should_ignore_case\n";
 
-process( $input_file, $output_file, $similarity_pct, $should_ignore_case, 1 );
+process( $input_file, $output_file, $similarity_pct, $should_ignore_case, 0 );
 
 ###############################################
 1;
