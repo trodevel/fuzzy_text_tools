@@ -59,9 +59,120 @@ sub process($$$$$)
     {
         process_sorted( $filename, $output_file, $similarity_pct, $should_ignore_case );
     }
+    else
+    {
+        process_unsorted( $filename, $output_file, $similarity_pct, $should_ignore_case );
+    }
 }
 
 ###############################################
+
+sub read_file($$)
+{
+    my ( $filename, $array_ref ) = @_;
+
+    print_debug( "reading file $filename ..." );
+
+    open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
+
+    my $lines = 0;
+
+    while( my $line = <$fl> )
+    {
+        chomp $line;
+        $lines++;
+
+        push( @$array_ref,  $line );
+
+        #print_debug( "line: $line" );
+    }
+
+    print_debug( "read $lines lines(s) from $filename" );
+}
+
+###############################################
+
+sub convert_array_to_map($$)
+{
+    my ( $array_ref, $map_ref ) = @_;
+
+    my $size = scalar @$array_ref;
+
+    for my $i (0 .. $size )
+    {
+        $map_ref->{$i} = @($array_ref)[$i];
+    }
+}
+
+###############################################
+
+sub process_unsorted($$$$)
+{
+    my ( $filename, $output_file, $similarity_pct, $should_ignore_case ) = @_;
+
+    my @inp;
+
+    read_file( $filename, \@inp );
+
+    my %inp_map;
+
+    convert_array_to_map( \@inp, \%inp_map );
+
+    return;
+
+    print_debug( "reading file $filename ..." );
+    print_debug( "writing file $output_file ..." );
+
+    open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
+    open( my $fl_o, ">:encoding(utf8)", $output_file ) or die "Couldn't open file for writing: $!\n";
+
+    my $lines = 0;
+    my $uniq_lines = 0;
+
+    my $prev_line = undef;
+#    my $has_print_prev_line = 0;
+
+    while( my $line = <$fl> )
+    {
+        chomp $line;
+        $lines++;
+
+        if( defined $prev_line )
+        {
+            my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line, $should_ignore_case );
+
+            print_debug( "prev_line '$prev_line', line '$line', similarity $similarity" );
+
+            if( $similarity < $similarity_pct )
+            {
+                $uniq_lines++;
+
+                print $fl_o $line . "\n";
+            }
+            else
+            {
+#                $has_print_prev_line = 1;
+            }
+        }
+        else
+        {
+            print_debug( "line '$line', no prev_line" );
+
+            $uniq_lines++;
+
+            print $fl_o $line . "\n";
+        }
+
+        $prev_line = $line;
+
+        #print_debug( "lines: $line" );
+    }
+
+    print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
+}
+
+###############################################
+
 sub process_sorted($$$$$)
 {
     my ( $filename, $output_file, $similarity_pct, $should_ignore_case, $is_sorted ) = @_;
