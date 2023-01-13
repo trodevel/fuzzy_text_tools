@@ -51,9 +51,20 @@ sub print_debug($)
 
 ###############################################
 
-sub process($$$$)
+sub process($$$$$)
 {
-    my ( $filename, $output_file, $similarity_pct, $should_ignore_case ) = @_;
+    my ( $filename, $output_file, $similarity_pct, $should_ignore_case, $is_sorted ) = @_;
+
+    if( $is_sorted == 1 )
+    {
+        process_sorted( $filename, $output_file, $similarity_pct, $should_ignore_case );
+    }
+}
+
+###############################################
+sub process_sorted($$$$$)
+{
+    my ( $filename, $output_file, $similarity_pct, $should_ignore_case, $is_sorted ) = @_;
 
     unless( -e $filename )
     {
@@ -149,7 +160,7 @@ print STDERR "output file         = $output_file\n";
 print STDERR "similarity          = $similarity_pct\n";
 print STDERR "should_ignore_case  = $should_ignore_case\n";
 
-process( $input_file, $output_file, $similarity_pct, $should_ignore_case );
+process( $input_file, $output_file, $similarity_pct, $should_ignore_case, 1 );
 
 ###############################################
 1;
