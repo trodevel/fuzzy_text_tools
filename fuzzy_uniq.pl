@@ -118,6 +118,8 @@ sub process_unsorted($$$$)
 
     read_file( $filename, \@inp );
 
+    my $size = scalar @inp;
+
     my %inp_map;
 
     convert_array_to_map( \@inp, \%inp_map );
@@ -131,11 +133,17 @@ sub process_unsorted($$$$)
 
     while( my( $k, $v ) = each %inp_map )
     {
+        $lines++;
+
         my $w_1 = $v;
 
         push( @outp, $w_1 );
 
         delete $inp_map{$k}; # delete current element
+
+        my $new_size = scalar keys %inp_map;
+
+        print_debug( "comparing $lines/$size word '$w_1', with $new_size words" );
 
         foreach my $k2 (keys %inp_map)
         {
