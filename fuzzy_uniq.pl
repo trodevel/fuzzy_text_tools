@@ -127,9 +127,13 @@ sub process_unsorted($$$$)
 
     keys %inp_map;
 
+    my @outp;
+
     while( my( $k, $v ) = each %inp_map )
     {
         my $w_1 = $v;
+
+        push( @outp, $w_1 );
 
         delete $inp_map{$k}; # delete current element
 
@@ -143,11 +147,11 @@ sub process_unsorted($$$$)
 
             if( $similarity < $similarity_pct )
             {
-                print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - SIMILAR" );
+                print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - DIFFERENT" );
 
                 $uniq_lines++;
 
-                print $fl_o $w_2 . "\n";
+                #print $fl_o $w_2 . "\n";
             }
             else
             {
@@ -165,9 +169,6 @@ sub process_unsorted($$$$)
 
     open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
     open( my $fl_o, ">:encoding(utf8)", $output_file ) or die "Couldn't open file for writing: $!\n";
-
-    my $lines = 0;
-    my $uniq_lines = 0;
 
     my $prev_line = undef;
 #    my $has_print_prev_line = 0;
