@@ -104,7 +104,7 @@ sub convert_array_to_map($$)
     {
         $map_ref->{$i} = $array[$i];
 
-        print_debug( "convert_array_to_map: $i - $array[$i]" );
+        #print_debug( "convert_array_to_map: $i - $array[$i]" );
     }
 }
 
@@ -121,6 +121,42 @@ sub process_unsorted($$$$)
     my %inp_map;
 
     convert_array_to_map( \@inp, \%inp_map );
+
+    my $lines = 0;
+    my $uniq_lines = 0;
+
+    keys %inp_map;
+
+    while( my( $k, $v ) = each %inp_map )
+    {
+        my $w_1 = $v;
+
+        delete $inp_map{$k}; # delete current element
+
+        foreach my $k2 (keys %inp_map)
+        {
+            my $w_2 = $inp_map{ $k2 };
+
+            my $similarity = fuzzy_uniq::calc_similarity( $w_1, $w_2, $should_ignore_case );
+
+            print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity" );
+
+            if( $similarity < $similarity_pct )
+            {
+                print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - SIMILAR" );
+
+                $uniq_lines++;
+
+                print $fl_o $w_2 . "\n";
+            }
+            else
+            {
+                print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - SIMILAR" );
+
+                delete $inp_map{$k2}; # delete similar element
+            }
+        }
+    }
 
     return;
 
