@@ -178,8 +178,6 @@ sub process_unsorted($$$$)
                 print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - DIFFERENT" );
 
                 $uniq_lines++;
-
-                #print $fl_o $w_2 . "\n";
             }
             else
             {
@@ -193,54 +191,6 @@ sub process_unsorted($$$$)
     write_file( $output_file, \@outp );
 
     print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
-
-    return;
-
-    print_debug( "reading file $filename ..." );
-    print_debug( "writing file $output_file ..." );
-
-    open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
-    open( my $fl_o, ">:encoding(utf8)", $output_file ) or die "Couldn't open file for writing: $!\n";
-
-    my $prev_line = undef;
-#    my $has_print_prev_line = 0;
-
-    while( my $line = <$fl> )
-    {
-        chomp $line;
-        $lines++;
-
-        if( defined $prev_line )
-        {
-            my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line, $should_ignore_case );
-
-            print_debug( "prev_line '$prev_line', line '$line', similarity $similarity" );
-
-            if( $similarity < $similarity_pct )
-            {
-                $uniq_lines++;
-
-                print $fl_o $line . "\n";
-            }
-            else
-            {
-#                $has_print_prev_line = 1;
-            }
-        }
-        else
-        {
-            print_debug( "line '$line', no prev_line" );
-
-            $uniq_lines++;
-
-            print $fl_o $line . "\n";
-        }
-
-        $prev_line = $line;
-
-        #print_debug( "lines: $line" );
-    }
-
 }
 
 ###############################################
