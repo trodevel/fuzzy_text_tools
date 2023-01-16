@@ -92,6 +92,26 @@ sub read_file($$)
 
 ###############################################
 
+sub write_file($$)
+{
+    my ( $filename, $array_ref ) = @_;
+
+    print_debug( "writing file $filename ..." );
+
+    open( my $fl, ">:encoding(utf8)", $filename ) or die "Couldn't open file for writing: $!\n";
+
+    my $size = scalar @$array_ref;
+
+    for my $i ( @$array_ref )
+    {
+        print $fl $i . "\n";
+    }
+
+    print_debug( "wrote $size lines(s) to $filename" );
+}
+
+###############################################
+
 sub convert_array_to_map($$)
 {
     my ( $array_ref, $map_ref ) = @_;
