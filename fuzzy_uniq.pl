@@ -32,22 +32,7 @@ use utf8;
 use Getopt::Long;
 
 require fuzzy_uniq;
-
-###############################################
-
-my $IS_VERBOSE=0;
-
-###############################################
-
-sub print_debug($)
-{
-    my ( $s ) = @_;
-
-    if( $IS_VERBOSE == 1 )
-    {
-        print "DEBUG: $s\n";
-    }
-}
+require logging;
 
 ###############################################
 
@@ -71,7 +56,7 @@ sub read_file($$)
 {
     my ( $filename, $array_ref ) = @_;
 
-    print_debug( "reading file $filename ..." );
+    logging::print_debug( "reading file $filename ..." );
 
     open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
 
@@ -87,7 +72,7 @@ sub read_file($$)
         #print_debug( "line: $line" );
     }
 
-    print_debug( "read $lines lines(s) from $filename" );
+    logging::print_debug( "read $lines lines(s) from $filename" );
 }
 
 ###############################################
@@ -96,7 +81,7 @@ sub write_file($$)
 {
     my ( $filename, $array_ref ) = @_;
 
-    print_debug( "writing file $filename ..." );
+    logging::print_debug( "writing file $filename ..." );
 
     open( my $fl, ">:encoding(utf8)", $filename ) or die "Couldn't open file for writing: $!\n";
 
@@ -107,7 +92,7 @@ sub write_file($$)
         print $fl $i . "\n";
     }
 
-    print_debug( "wrote $size lines(s) to $filename" );
+    logging::print_debug( "wrote $size lines(s) to $filename" );
 }
 
 ###############################################
@@ -124,7 +109,7 @@ sub convert_array_to_map($$)
     {
         $map_ref->{$i} = $array[$i];
 
-        #print_debug( "convert_array_to_map: $i - $array[$i]" );
+        #logging::print_debug( "convert_array_to_map: $i - $array[$i]" );
     }
 }
 
@@ -163,7 +148,7 @@ sub process_unsorted($$$$)
 
         my $new_size = scalar keys %inp_map;
 
-        print_debug( "comparing $lines/$size word '$w_1', with $new_size words" );
+        logging::print_debug( "comparing $lines/$size word '$w_1', with $new_size words" );
 
         foreach my $k2 (keys %inp_map)
         {
@@ -171,17 +156,17 @@ sub process_unsorted($$$$)
 
             my $similarity = fuzzy_uniq::calc_similarity( $w_1, $w_2, $should_ignore_case );
 
-            print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity" );
+            logging::print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity" );
 
             if( $similarity < $similarity_pct )
             {
-                print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - DIFFERENT" );
+                logging::print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - DIFFERENT" );
 
                 $uniq_lines++;
             }
             else
             {
-                print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - SIMILAR" );
+                logging::print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - SIMILAR" );
 
                 delete $inp_map{$k2}; # delete similar element
             }
@@ -205,8 +190,8 @@ sub process_sorted($$$$$)
         exit;
     }
 
-    print_debug( "reading file $filename ..." );
-    print_debug( "writing file $output_file ..." );
+    logging::print_debug( "reading file $filename ..." );
+    logging::print_debug( "writing file $output_file ..." );
 
     open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
     open( my $fl_o, ">:encoding(utf8)", $output_file ) or die "Couldn't open file for writing: $!\n";
@@ -226,7 +211,7 @@ sub process_sorted($$$$$)
         {
             my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line, $should_ignore_case );
 
-            print_debug( "prev_line '$prev_line', line '$line', similarity $similarity" );
+            logging::print_debug( "prev_line '$prev_line', line '$line', similarity $similarity" );
 
             if( $similarity < $similarity_pct )
             {
@@ -241,7 +226,7 @@ sub process_sorted($$$$$)
         }
         else
         {
-            print_debug( "line '$line', no prev_line" );
+            logging::print_debug( "line '$line', no prev_line" );
 
             $uniq_lines++;
 
@@ -250,7 +235,7 @@ sub process_sorted($$$$$)
 
         $prev_line = $line;
 
-        #print_debug( "lines: $line" );
+        #logging::print_debug( "lines: $line" );
     }
 
     print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
@@ -273,18 +258,21 @@ my $input_file;
 my $output_file;
 my $similarity_pct;
 my $should_ignore_case = 0;
+my $is_verbose = 0;
 
 GetOptions(
             "input_file=s"      => \$input_file,   # string
             "output_file=s"     => \$output_file,  # string
             "similarity=i"      => \$similarity_pct,   # integer
             "ignore-case"       => \$should_ignore_case,   # flag
-            "verbose"           => \$IS_VERBOSE   )    # flag
+            "verbose"           => \$is_verbose  )     # flag
   or die("Error in command line arguments\n");
 
 &print_help if not defined $input_file;
 &print_help if not defined $output_file;
 &print_help if not defined $similarity_pct;
+
+logging::set_log_level( $is_verbose );
 
 binmode(STDOUT, "encoding(UTF-8)");
 
