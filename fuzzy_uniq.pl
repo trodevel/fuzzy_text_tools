@@ -207,6 +207,7 @@ my $input_file;
 my $output_file;
 my $similarity_pct;
 my $should_ignore_case = 0;
+my $is_sorted = 0;
 my $is_verbose = 0;
 
 GetOptions(
@@ -214,6 +215,7 @@ GetOptions(
             "output_file=s"     => \$output_file,  # string
             "similarity=i"      => \$similarity_pct,   # integer
             "ignore-case"       => \$should_ignore_case,   # flag
+            "sorted"            => \$is_sorted,        # flag
             "verbose"           => \$is_verbose  )     # flag
   or die("Error in command line arguments\n");
 
@@ -228,9 +230,10 @@ binmode(STDOUT, "encoding(UTF-8)");
 print STDERR "input_file          = $input_file\n";
 print STDERR "output file         = $output_file\n";
 print STDERR "similarity          = $similarity_pct\n";
+print STDERR "is_sorted           = $is_sorted\n";
 print STDERR "should_ignore_case  = $should_ignore_case\n";
 
-process( $input_file, $output_file, $similarity_pct, $should_ignore_case, 0 );
+process( $input_file, $output_file, $similarity_pct, $should_ignore_case, $is_sorted );
 
 ###############################################
 1;
