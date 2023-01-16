@@ -33,6 +33,7 @@ use Getopt::Long;
 
 require fuzzy_uniq;
 require logging;
+require read_write_text_file;
 
 ###############################################
 
@@ -48,51 +49,6 @@ sub process($$$$$)
     {
         process_unsorted( $filename, $output_file, $similarity_pct, $should_ignore_case );
     }
-}
-
-###############################################
-
-sub read_file($$)
-{
-    my ( $filename, $array_ref ) = @_;
-
-    logging::print_debug( "reading file $filename ..." );
-
-    open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
-
-    my $lines = 0;
-
-    while( my $line = <$fl> )
-    {
-        chomp $line;
-        $lines++;
-
-        push( @$array_ref,  $line );
-
-        #print_debug( "line: $line" );
-    }
-
-    logging::print_debug( "read $lines lines(s) from $filename" );
-}
-
-###############################################
-
-sub write_file($$)
-{
-    my ( $filename, $array_ref ) = @_;
-
-    logging::print_debug( "writing file $filename ..." );
-
-    open( my $fl, ">:encoding(utf8)", $filename ) or die "Couldn't open file for writing: $!\n";
-
-    my $size = scalar @$array_ref;
-
-    for my $i ( @$array_ref )
-    {
-        print $fl $i . "\n";
-    }
-
-    logging::print_debug( "wrote $size lines(s) to $filename" );
 }
 
 ###############################################
