@@ -190,6 +190,10 @@ sub process_unsorted($$$$)
         }
     }
 
+    write_file( $output_file, \@outp );
+
+    print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
+
     return;
 
     print_debug( "reading file $filename ..." );
@@ -237,7 +241,6 @@ sub process_unsorted($$$$)
         #print_debug( "lines: $line" );
     }
 
-    print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
 }
 
 ###############################################
