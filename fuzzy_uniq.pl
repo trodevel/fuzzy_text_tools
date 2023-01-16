@@ -86,8 +86,6 @@ sub process_unsorted($$$$)
     convert_array_to_map( \@inp, \%inp_map );
 
     my $lines = 0;
-    my $uniq_lines = 0;
-
     keys %inp_map;
 
     my @outp;
@@ -117,8 +115,6 @@ sub process_unsorted($$$$)
             if( $similarity < $similarity_pct )
             {
                 logging::print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - DIFFERENT" );
-
-                $uniq_lines++;
             }
             else
             {
@@ -128,6 +124,8 @@ sub process_unsorted($$$$)
             }
         }
     }
+
+    my $uniq_lines = scalar @outp;
 
     write_file( $output_file, \@outp );
 
