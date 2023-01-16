@@ -129,7 +129,7 @@ sub process_unsorted($$$$)
 
     write_file( $output_file, \@outp );
 
-    print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
+    print "INFO: read $size lines(s) from $filename, wrote $uniq_lines to $output_file\n";
 }
 
 ###############################################
