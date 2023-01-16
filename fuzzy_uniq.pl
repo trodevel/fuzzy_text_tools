@@ -154,7 +154,6 @@ sub process_sorted($$$$$)
     my $uniq_lines = 0;
 
     my $prev_line = undef;
-#    my $has_print_prev_line = 0;
 
     while( my $line = <$fl> )
     {
@@ -172,10 +171,6 @@ sub process_sorted($$$$$)
                 $uniq_lines++;
 
                 print $fl_o $line . "\n";
-            }
-            else
-            {
-#                $has_print_prev_line = 1;
             }
         }
         else
