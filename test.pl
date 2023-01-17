@@ -143,6 +143,11 @@ sub test_15()
     test_calc_similarity( 'test_15', "Режиссер монтажа", "режиссёр", 1 );
 }
 
+sub test_16()
+{
+    test_calc_similarity( 'test_16', "engineer", "1c программист", 1 );
+}
+
 test_01();
 test_02();
 test_03();
@@ -158,3 +163,4 @@ test_12();
 test_13();
 test_14();
 test_15();
+test_16();
