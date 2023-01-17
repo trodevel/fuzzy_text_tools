@@ -32,28 +32,111 @@ use utf8;
 use Getopt::Long;
 
 require fuzzy_uniq;
+require logging;
+require read_write_text_file;
 
 ###############################################
 
-my $IS_VERBOSE=0;
-
-###############################################
-
-sub print_debug($)
+sub process($$$$$)
 {
-    my ( $s ) = @_;
+    my ( $filename, $output_file, $similarity_pct, $should_ignore_case, $is_sorted ) = @_;
 
-    if( $IS_VERBOSE == 1 )
+    if( $is_sorted == 1 )
     {
-        print "DEBUG: $s\n";
+        process_sorted( $filename, $output_file, $similarity_pct, $should_ignore_case );
+    }
+    else
+    {
+        process_unsorted( $filename, $output_file, $similarity_pct, $should_ignore_case );
     }
 }
 
 ###############################################
 
-sub process($$$$)
+sub convert_array_to_map($$)
+{
+    my ( $array_ref, $map_ref ) = @_;
+
+    my @array = @$array_ref;
+
+    my $size = scalar @array;
+
+    for my $i (0 .. ( $size - 1 ) )
+    {
+        $map_ref->{$i} = $array[$i];
+
+        #logging::print_debug( "convert_array_to_map: $i - $array[$i]" );
+    }
+}
+
+###############################################
+
+sub process_unsorted($$$$)
 {
     my ( $filename, $output_file, $similarity_pct, $should_ignore_case ) = @_;
+
+    my @inp;
+
+    read_file( $filename, \@inp );
+
+    my $size = scalar @inp;
+
+    my %inp_map;
+
+    convert_array_to_map( \@inp, \%inp_map );
+
+    my $lines = 0;
+    keys %inp_map;
+
+    my @outp;
+
+    while( my( $k, $v ) = each %inp_map )
+    {
+        $lines++;
+
+        my $w_1 = $v;
+
+        push( @outp, $w_1 );
+
+        delete $inp_map{$k}; # delete current element
+
+        my $new_size = scalar keys %inp_map;
+
+        logging::print_debug( "comparing $lines/$size word '$w_1', with $new_size words" );
+
+        foreach my $k2 (keys %inp_map)
+        {
+            my $w_2 = $inp_map{ $k2 };
+
+            my $similarity = fuzzy_uniq::calc_similarity( $w_1, $w_2, $should_ignore_case );
+
+            logging::print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity" );
+
+            if( $similarity < $similarity_pct )
+            {
+                logging::print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - DIFFERENT" );
+            }
+            else
+            {
+                logging::print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity - SIMILAR" );
+
+                delete $inp_map{$k2}; # delete similar element
+            }
+        }
+    }
+
+    my $uniq_lines = scalar @outp;
+
+    write_file( $output_file, \@outp );
+
+    print "INFO: read $size lines(s) from $filename, wrote $uniq_lines to $output_file\n";
+}
+
+###############################################
+
+sub process_sorted($$$$$)
+{
+    my ( $filename, $output_file, $similarity_pct, $should_ignore_case, $is_sorted ) = @_;
 
     unless( -e $filename )
     {
@@ -61,8 +144,8 @@ sub process($$$$)
         exit;
     }
 
-    print_debug( "reading file $filename ..." );
-    print_debug( "writing file $output_file ..." );
+    logging::print_debug( "reading file $filename ..." );
+    logging::print_debug( "writing file $output_file ..." );
 
     open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
     open( my $fl_o, ">:encoding(utf8)", $output_file ) or die "Couldn't open file for writing: $!\n";
@@ -71,7 +154,6 @@ sub process($$$$)
     my $uniq_lines = 0;
 
     my $prev_line = undef;
-#    my $has_print_prev_line = 0;
 
     while( my $line = <$fl> )
     {
@@ -82,7 +164,7 @@ sub process($$$$)
         {
             my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line, $should_ignore_case );
 
-            print_debug( "prev_line '$prev_line', line '$line', similarity $similarity" );
+            logging::print_debug( "prev_line '$prev_line', line '$line', similarity $similarity" );
 
             if( $similarity < $similarity_pct )
             {
@@ -90,14 +172,10 @@ sub process($$$$)
 
                 print $fl_o $line . "\n";
             }
-            else
-            {
-#                $has_print_prev_line = 1;
-            }
         }
         else
         {
-            print_debug( "line '$line', no prev_line" );
+            logging::print_debug( "line '$line', no prev_line" );
 
             $uniq_lines++;
 
@@ -106,7 +184,7 @@ sub process($$$$)
 
         $prev_line = $line;
 
-        #print_debug( "lines: $line" );
+        #logging::print_debug( "lines: $line" );
     }
 
     print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
@@ -129,27 +207,33 @@ my $input_file;
 my $output_file;
 my $similarity_pct;
 my $should_ignore_case = 0;
+my $is_sorted = 0;
+my $is_verbose = 0;
 
 GetOptions(
             "input_file=s"      => \$input_file,   # string
             "output_file=s"     => \$output_file,  # string
             "similarity=i"      => \$similarity_pct,   # integer
             "ignore-case"       => \$should_ignore_case,   # flag
-            "verbose"           => \$IS_VERBOSE   )    # flag
+            "sorted"            => \$is_sorted,        # flag
+            "verbose"           => \$is_verbose  )     # flag
   or die("Error in command line arguments\n");
 
 &print_help if not defined $input_file;
 &print_help if not defined $output_file;
 &print_help if not defined $similarity_pct;
 
+logging::set_log_level( $is_verbose );
+
 binmode(STDOUT, "encoding(UTF-8)");
 
 print STDERR "input_file          = $input_file\n";
 print STDERR "output file         = $output_file\n";
 print STDERR "similarity          = $similarity_pct\n";
+print STDERR "is_sorted           = $is_sorted\n";
 print STDERR "should_ignore_case  = $should_ignore_case\n";
 
-process( $input_file, $output_file, $similarity_pct, $should_ignore_case );
+process( $input_file, $output_file, $similarity_pct, $should_ignore_case, $is_sorted );
 
 ###############################################
 1;
