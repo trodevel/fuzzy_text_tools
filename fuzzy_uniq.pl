@@ -108,7 +108,7 @@ sub process_unsorted($$$$)
         {
             my $w_2 = $inp_map{ $k2 };
 
-            my $similarity = fuzzy_uniq::calc_similarity( $w_1, $w_2, $should_ignore_case );
+            my $similarity = fuzzy_text_tools::calc_similarity( $w_1, $w_2, $should_ignore_case );
 
             logging::print_debug( "word_1 '$w_1', word_2 '$w_2', similarity $similarity" );
 
@@ -162,7 +162,7 @@ sub process_sorted($$$$$)
 
         if( defined $prev_line )
         {
-            my $similarity = fuzzy_uniq::calc_similarity( $line, $prev_line, $should_ignore_case );
+            my $similarity = fuzzy_text_tools::calc_similarity( $line, $prev_line, $should_ignore_case );
 
             logging::print_debug( "prev_line '$prev_line', line '$line', similarity $similarity" );
 

@@ -53,7 +53,7 @@ sub collect($$$$)
         chomp $line;
         $line_nr++;
 
-        my $similarity = fuzzy_uniq::calc_similarity( $word, $line, $should_ignore_case );
+        my $similarity = fuzzy_text_tools::calc_similarity( $word, $line, $should_ignore_case );
 
         logging::print_debug( "word '$word', line '$line', similarity $similarity" );
 
