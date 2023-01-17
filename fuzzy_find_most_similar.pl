@@ -31,7 +31,7 @@ use 5.010;
 use utf8;
 use Getopt::Long;
 
-require fuzzy_find_most_similar;
+require fuzzy_uniq;
 require logging;
 require read_write_text_file;
 
