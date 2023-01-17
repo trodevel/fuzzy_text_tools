@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #
-# Fuzzy Uniq
+# Fuzzy Text Tools
 #
 # Copyright (C) 2023 Dr. Sergey Kolevatov
 #
@@ -24,7 +24,7 @@ use warnings;
 use utf8;
 use String::Approx;
 
-package fuzzy_uniq;
+package fuzzy_text_tools;
 
 sub calc_dist($$)
 {

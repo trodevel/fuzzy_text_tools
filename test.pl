@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use utf8;
 
-require fuzzy_uniq;
+require fuzzy_text_tools;
 
 binmode(STDOUT, "encoding(UTF-8)");
 

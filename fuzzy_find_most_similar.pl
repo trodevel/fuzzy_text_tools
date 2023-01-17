@@ -31,7 +31,7 @@ use 5.010;
 use utf8;
 use Getopt::Long;
 
-require fuzzy_uniq;
+require fuzzy_text_tools;
 require logging;
 
 ###############################################
