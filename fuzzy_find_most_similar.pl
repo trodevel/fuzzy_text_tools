@@ -45,7 +45,7 @@ sub collect($$$$)
 
     open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
 
-    my $lines = 0;
+    my $line_nr = 0;
 
     my $max_similarity = 0.0;
 
