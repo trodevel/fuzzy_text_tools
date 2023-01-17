@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use utf8;
 
-require fuzzy_uniq;
+require fuzzy_text_tools;
 
 binmode(STDOUT, "encoding(UTF-8)");
 
@@ -31,7 +31,7 @@ sub test_calc_dist($$$)
 {
     my ( $name, $word_1, $word_2 ) = @_;
 
-    my $res = fuzzy_uniq::calc_dist( $word_1, $word_2 );
+    my $res = fuzzy_text_tools::calc_dist( $word_1, $word_2 );
 
     print "INFO: $name: dist = $res, word_1 '$word_1', word_2 '$word_2'\n";
 }
@@ -44,13 +44,13 @@ sub test_calc_similarity($$$@)
     {
         if( $should_ignore_case == 1 )
         {
-            my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2, $should_ignore_case );
+            my $res = fuzzy_text_tools::calc_similarity( $word_1, $word_2, $should_ignore_case );
             print "INFO: $name: similarity_i = $res, word_1 '$word_1', word_2 '$word_2'\n";
             return;
         }
     }
 
-    my $res = fuzzy_uniq::calc_similarity( $word_1, $word_2 );
+    my $res = fuzzy_text_tools::calc_similarity( $word_1, $word_2 );
     print "INFO: $name: similarity = $res, word_1 '$word_1', word_2 '$word_2'\n";
 }
 
@@ -58,7 +58,7 @@ sub test_calc_similarity_i($$$)
 {
     my ( $name, $word_1, $word_2 ) = @_;
 
-    my $res = fuzzy_uniq::calc_similarity_i( $word_1, $word_2 );
+    my $res = fuzzy_text_tools::calc_similarity_i( $word_1, $word_2 );
 
     print "INFO: $name: similarity_i = $res, word_1 '$word_1', word_2 '$word_2'\n";
 }
