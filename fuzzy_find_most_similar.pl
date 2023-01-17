@@ -83,6 +83,27 @@ sub collect($$$$)
 
 ###############################################
 
+sub write_file($$)
+{
+    my ( $filename, $array_ref ) = @_;
+
+    logging::print_debug( "writing file $filename ..." );
+
+    open( my $fl, ">:encoding(utf8)", $filename ) or die "Couldn't open file for writing: $!\n";
+
+    my $size = scalar @$array_ref;
+
+    for my $i ( @$array_ref )
+    {
+        my @elem = @$i;
+
+        print $fl $elem[0] . ';' . $elem[1] . ';' . $elem[2] . "\n";
+    }
+
+    logging::print_debug( "wrote $size lines(s) to $filename" );
+}
+
+###############################################
 sub process($$$$)
 {
     my ( $filename, $output_file, $word, $should_ignore_case ) = @_;
@@ -93,7 +114,7 @@ sub process($$$$)
 
     my $size = scalar @res;
 
-    #write_file( $output_file, \@outp );
+    write_file( $output_file, \@outp );
 
     print "INFO: wrote $size most similar lines(s) from $filename to $output_file\n";
 }
