@@ -52,7 +52,7 @@ sub collect($$$$)
     while( my $line = <$fl> )
     {
         chomp $line;
-        $lines++;
+        $line_nr++;
 
         my $similarity = fuzzy_uniq::calc_similarity( $word, $line, $should_ignore_case );
 
@@ -72,7 +72,7 @@ sub collect($$$$)
 
             my @match;
 
-            push( @match, $lines );
+            push( @match, $line_nr );
             push( @match, $similarity );
             push( @match, $line );
 
