@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 #
-# fuzzy_uniq
+# fuzzy_find_most_similar
 #
 # Copyright (C) 2023 Dr. Sergey Kolevatov
 #
@@ -31,15 +31,15 @@ use 5.010;
 use utf8;
 use Getopt::Long;
 
-require fuzzy_uniq;
+require fuzzy_find_most_similar;
 require logging;
 require read_write_text_file;
 
 ###############################################
 
-sub process($$$$)
+sub collect($$$$)
 {
-    my ( $filename, $output_file, $word, $should_ignore_case ) = @_;
+    my ( $filename, $res_ref, $word, $should_ignore_case ) = @_;
 
     logging::print_debug( "reading file $filename ..." );
     logging::print_debug( "writing file $output_file ..." );
@@ -50,14 +50,12 @@ sub process($$$$)
 
     my $max_similarity = 0.0;
 
-    my @res;
-
     while( my $line = <$fl> )
     {
         chomp $line;
         $lines++;
 
-        my $similarity = fuzzy_uniq::calc_similarity( $word, $line, $should_ignore_case );
+        my $similarity = fuzzy_find_most_similar::calc_similarity( $word, $line, $should_ignore_case );
 
         logging::print_debug( "word '$word', line '$line', similarity $similarity" );
 
@@ -68,7 +66,7 @@ sub process($$$$)
                 logging::print_debug( "word '$word', line '$line', similarity $similarity - NEW MAXIMUM" );
 
                 $max_similarity = $similarity;
-                @res = ();
+                @$res_ref = ();
             }
 
             logging::print_debug( "word '$word', adding line '$line', similarity $similarity for current maximum" );
@@ -78,19 +76,36 @@ sub process($$$$)
             push( @match, $lines );
             push( @match, $similarity );
             push( @match, $line );
+
+            push( @$res_ref, \@match );
         }
     }
+}
 
-    print "INFO: read $lines lines(s) from $filename, wrote $uniq_lines to $output_file\n";
+###############################################
+
+sub process($$$$)
+{
+    my ( $filename, $output_file, $word, $should_ignore_case ) = @_;
+
+    my @res;
+
+    collect( $filename, \@res, $word, $should_ignore_case );
+
+    my $size = scalar @res;
+
+    #write_file( $output_file, \@outp );
+
+    print "INFO: wrote $size most similar lines(s) from $filename to $output_file\n";
 }
 
 ###############################################
 
 sub print_help()
 {
-    print STDERR "\nUsage: fuzzy_uniq.sh --input_file <input.txt> --output_file <output.txt> --similarity <similarity_pct>\n";
+    print STDERR "\nUsage: fuzzy_find_most_similar.sh --input_file <input.txt> --output_file <output.txt> --word <word>\n";
     print STDERR "\nExamples:\n";
-    print STDERR "\ncode_gen.sh --input_file data.txt --output_file data_uniq.h --similarity 90\n";
+    print STDERR "\ncode_gen.sh --input_file data.txt --output_file data_uniq.h --word engineer\n";
     print STDERR "\n";
     exit
 }
@@ -99,23 +114,21 @@ sub print_help()
 
 my $input_file;
 my $output_file;
-my $similarity_pct;
+my $word;
 my $should_ignore_case = 0;
-my $is_sorted = 0;
 my $is_verbose = 0;
 
 GetOptions(
             "input_file=s"      => \$input_file,   # string
             "output_file=s"     => \$output_file,  # string
-            "similarity=i"      => \$similarity_pct,   # integer
+            "word=s"            => \$word,         # string
             "ignore-case"       => \$should_ignore_case,   # flag
-            "sorted"            => \$is_sorted,        # flag
             "verbose"           => \$is_verbose  )     # flag
   or die("Error in command line arguments\n");
 
 &print_help if not defined $input_file;
 &print_help if not defined $output_file;
-&print_help if not defined $similarity_pct;
+&print_help if not defined $word;
 
 logging::set_log_level( $is_verbose );
 
@@ -123,11 +136,10 @@ binmode(STDOUT, "encoding(UTF-8)");
 
 print STDERR "input_file          = $input_file\n";
 print STDERR "output file         = $output_file\n";
-print STDERR "similarity          = $similarity_pct\n";
-print STDERR "is_sorted           = $is_sorted\n";
+print STDERR "word                = $word\n";
 print STDERR "should_ignore_case  = $should_ignore_case\n";
 
-process( $input_file, $output_file, $similarity_pct, $should_ignore_case, $is_sorted );
+process( $input_file, $output_file, $word, $should_ignore_case );
 
 ###############################################
 1;
