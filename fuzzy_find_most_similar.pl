@@ -42,7 +42,6 @@ sub collect($$$$)
     my ( $filename, $res_ref, $word, $should_ignore_case ) = @_;
 
     logging::print_debug( "reading file $filename ..." );
-    logging::print_debug( "writing file $output_file ..." );
 
     open( my $fl, "<:encoding(utf8)", $filename ) or die "Couldn't open file for reading: $!\n";
 
