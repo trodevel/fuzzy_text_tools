@@ -114,7 +114,7 @@ sub process($$$$)
 
     my $size = scalar @res;
 
-    write_file( $output_file, \@outp );
+    write_file( $output_file, \@res );
 
     print "INFO: wrote $size most similar lines(s) from $filename to $output_file\n";
 }
